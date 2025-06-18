@@ -9,6 +9,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* מניעת גלילה אופקית במובייל */
+  overflow-x: hidden;
+  /* מניעת בחירת טקסט במובייל */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 code {
@@ -39,4 +46,58 @@ code {
     color: #65D0FA;
     font-size: 1rem;
     font-weight: bold;
+}
+
+/* Mobile-only styles */
+@media (max-width: 768px) {
+    .text-sm {
+        font-size: 1rem;
+        line-height: 1.25rem;
+    }
+
+    .text-gray-800 {
+        --tw-text-opacity: 1;
+        color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+        font-size: 1.05rem;
+    }
+
+    .text-blue-600 {
+        --tw-text-opacity: 1;
+        color: #3459B1;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .font-bold.text-blue-600.hover\:text-blue-800.underline {
+        color: #65D0FA;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+}
+
+/* Desktop prevention styles */
+@media (min-width: 769px) {
+    /* הסתרת התוכן הראשי בדסקטופ */
+    #root > div:not(:first-child) {
+        display: none !important;
+    }
+}
+
+/* Mobile-specific touch improvements */
+@media (max-width: 768px) {
+    /* שיפור מגע במובייל */
+    button, a, [role="button"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* מניעת זום לא רצוי */
+    input, textarea, select {
+        font-size: 16px !important;
+    }
+    
+    /* שיפור ביצועים במובייל */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
 } 
