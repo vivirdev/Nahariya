@@ -1,0 +1,920 @@
+import React, { useState, useRef } from 'react';
+import { ChevronLeft, ChevronDown, ChevronRight, ThumbsUp, Heart, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ThankYou from './ThankYou';
+
+type SectionChoice = 'completed' | 'notRelevant';
+type FeedbackChoice = 'like' | 'heart' | null;
+
+interface Section {
+  title: string;
+  completed: boolean;
+  notRelevant: boolean;
+}
+
+interface Tab {
+  title: string;
+  color: string;
+  hoverColor: string;
+  progressColor: string;
+  sections: Section[];
+}
+
+const FullPageWithTabs = () => {
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+  const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
+  const [isDurationOpen, setIsDurationOpen] = useState<boolean>(false);
+  const [feedbackChoice, setFeedbackChoice] = useState<FeedbackChoice>(null);
+  const [isFeelingOpen, setIsFeelingOpen] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submissionMessage, setSubmissionMessage] = useState<string>('');
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({
+    0: 'notRelevant',
+    1: 'completed',   
+    2: 'notRelevant',
+    'tab1-0': 'notRelevant',
+    'tab2-0': 'notRelevant',
+    'tab2-1': 'completed',
+    'tab3-0': 'notRelevant',
+    'tab3-1': 'completed',
+    'tab3-2': 'notRelevant',
+    'tab3-3': 'notRelevant',
+    'tab4-0': 'notRelevant',
+    'tab4-1': 'completed',
+    'tab4-2': 'notRelevant',
+    'tab4-3': 'notRelevant',
+    'tab5-0': 'notRelevant',
+    'tab5-1': 'completed',
+    'tab5-2': 'notRelevant'
+  });
+
+  const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const navigate = useNavigate();
+
+  const scrollToTab = (index: number) => {
+    const tabElement = tabRefs.current[index];
+    if (tabElement) {
+      const stickyHeaderHeight = 120; // גובה משוער של האיזור הסטיקי
+      const elementPosition = tabElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - stickyHeaderHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleTabClick = (index: number) => {
+    setActiveTab(index);
+    const tabElement = document.getElementById(`tab-${index}`);
+    if (tabElement) {
+      const stickyHeaderHeight = 120; // גובה האיזור הסטיקי
+      const tabPosition = tabElement.offsetTop - stickyHeaderHeight;
+      window.scrollTo({
+        top: tabPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleNext = () => {
+    if (activeTab < tabs.length - 1) {
+      setActiveTab(activeTab + 1);
+      const nextTabElement = document.getElementById(`tab-${activeTab + 1}`);
+      if (nextTabElement) {
+        const stickyHeaderHeight = 120;
+        const tabPosition = nextTabElement.offsetTop - stickyHeaderHeight;
+        window.scrollTo({
+          top: tabPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
+  const handlePrev = () => {
+    if (activeTab > 0) {
+      setActiveTab(activeTab - 1);
+      const prevTabElement = document.getElementById(`tab-${activeTab - 1}`);
+      if (prevTabElement) {
+        const stickyHeaderHeight = 120;
+        const tabPosition = prevTabElement.offsetTop - stickyHeaderHeight;
+        window.scrollTo({
+          top: tabPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
+  const tabs = [
+    {
+      title: 'ארנונה',
+      color: '#FF8201',
+      hoverColor: '#E67401',
+      progressColor: '#FF8201',
+      sections: [
+        {
+          title: 'העברת תשלומי ארנונה על שמי',
+          completed: false,
+          notRelevant: true
+        },
+        {
+          title: 'קבלת שוברים לתשלום במייל',
+          completed: true,
+          notRelevant: false
+        },
+        {
+          title: 'החלפת צרכנים',
+          completed: false,
+          notRelevant: true
+        }
+      ]
+    },
+    {
+      title: 'אישור טאבו',
+      color: '#FF9C33',
+      hoverColor: '#E68A2B',
+      progressColor: '#FF9C33',
+      sections: [
+        {
+          title: 'אישור העדר חובות לעירייה',
+          completed: false,
+          notRelevant: true
+        }
+      ]
+    },
+    {
+      title: 'תו חניה נהרייני',
+      color: '#65D0FA',
+      hoverColor: '#4DC4F7',
+      progressColor: '#65D0FA',
+      sections: [
+        {
+          title: 'קבלת תו חניה נהרייני',
+          completed: false,
+          notRelevant: true
+        },
+        {
+          title: 'ערעור על דוח חניה',
+          completed: true,
+          notRelevant: false
+        }
+      ]
+    },
+    {
+      title: 'מסגרות חינוך',
+      color: '#3459B1',
+      hoverColor: '#2B4A95',
+      progressColor: '#3459B1',
+      sections: [
+        {
+          title: 'רישום למסגרות חינוך',
+          completed: false,
+          notRelevant: true
+        },
+        {
+          title: 'רישום ילדים לצהרון',
+          completed: true,
+          notRelevant: false
+        },
+        {
+          title: 'רישום ילדים לקייטנות קיץ',
+          completed: false,
+          notRelevant: false
+        },
+        {
+          title: 'טפסים ושירותים בתחום החינוך',
+          completed: false,
+          notRelevant: false
+        }
+      ]
+    },
+    {
+      title: 'בילוי ופנאי',
+      color: '#04B46B',
+      hoverColor: '#03A05F',
+      progressColor: '#04B46B',
+      sections: [
+        {
+          title: 'הצטרפות לקבוצת וואטסאפ',
+          completed: false,
+          notRelevant: true
+        },
+        {
+          title: 'בילוי ופנאי לותיקים',
+          completed: true,
+          notRelevant: false
+        },
+        {
+          title: 'בילוי ופנאי לצעירים ומשפחות',
+          completed: false,
+          notRelevant: false
+        },
+        {
+          title: 'ספרייה העירונית מידעטק',
+          completed: false,
+          notRelevant: false
+        }
+      ]
+    },
+    {
+      title: 'עסק חדש',
+      color: '#FFCF01',
+      hoverColor: '#E6BA01',
+      progressColor: '#FFCF01',
+      sections: [
+        {
+          title: 'התעניינות / רישום עסק חדש בעיר',
+          completed: false,
+          notRelevant: true
+        },
+        {
+          title: 'למידע על סיוע לעסקים מקומיים',
+          completed: true,
+          notRelevant: false
+        },
+        {
+          title: 'בילוי ופנאי לצעירים ומשפחות',
+          completed: false,
+          notRelevant: false
+        }
+      ]
+    }
+  ];
+
+  const durationOptions = [
+    'עדיין לא עברתי',
+    '0-3 חודשים',
+    '3-6 חודשים',
+    '6-12 חודשים',
+    '12+ חודשים'
+  ];
+
+  const feelingOptions = [
+    'מרגיש.ה כמו בבית',
+    'די בנוח פה',
+    'עדיין מסתגל.ת',
+    'קשה לי להסתגל'
+  ];
+
+  const handleSectionChoice = (sectionIndex: string | number, choice: SectionChoice) => {
+    setSectionChoices(prev => ({
+      ...prev,
+      [sectionIndex]: choice
+    }));
+  };
+
+  const toggleFaq = (index: number) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
+
+  const handleSubmit = async () => {
+    // בדיקת שדות חובה
+    if (!selectedDuration || !selectedFeeling) {
+      setSubmissionMessage('אנא השלם את שתי השאלות הראשונות לפני השליחה');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmissionMessage('');
+    
+    // איסוף כל הנתונים מהטופס
+    const data = {
+      duration: selectedDuration,
+      feeling: selectedFeeling,
+      feedback: feedbackChoice,
+      sections: sectionChoices,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      language: navigator.language || 'he'
+    };
+
+    try {
+      // שליחה ל-webhook
+      const response = await fetch('https://hook.us1.make.com/17lut1ue2378y5nnwgfqlk9wih04hadk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        setSubmissionMessage('הטופס נשלח בהצלחה! תודה על המשוב.');
+        setIsSubmitted(true);
+        
+        // איפוס הטופס אחרי 3 שניות
+        setTimeout(() => {
+          setSelectedDuration(null);
+          setSelectedFeeling(null);
+          setFeedbackChoice(null);
+          setSectionChoices({
+            0: 'notRelevant',
+            1: 'completed',   
+            2: 'notRelevant',
+            'tab1-0': 'notRelevant',
+            'tab2-0': 'notRelevant',
+            'tab2-1': 'completed',
+            'tab3-0': 'notRelevant',
+            'tab3-1': 'completed',
+            'tab3-2': 'notRelevant',
+            'tab3-3': 'notRelevant',
+            'tab4-0': 'notRelevant',
+            'tab4-1': 'completed',
+            'tab4-2': 'notRelevant',
+            'tab4-3': 'notRelevant',
+            'tab5-0': 'notRelevant',
+            'tab5-1': 'completed',
+            'tab5-2': 'notRelevant'
+          });
+          setActiveTab(0);
+          setSubmissionMessage('');
+          setIsSubmitted(false);
+        }, 3000);
+        navigate('/thankyou');
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmissionMessage('אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.');
+      setIsSubmitted(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getNumberColor = (index: number) => {
+    if (index === 0) return 'bg-[#FF8201]';
+    if (index === 1) return 'bg-[#FF9C33]';
+    if (index === 2) return 'bg-[#65D0FA]';
+    if (index === 3) return 'bg-[#3459B1]';
+    if (index === 4) return 'bg-[#04B46B]';
+    if (index === 5) return 'bg-[#FFCF01]';
+    return 'bg-gray-400';
+  };
+
+  // חישוב אחוז ההתקדמות לפס
+  const getProgressPercentage = () => {
+    if (activeTab === 0) return 0;
+    if (activeTab >= tabs.length - 1) return 100;
+    
+    // חישוב האחוז בהתאם למיקום הטאב הנוכחי
+    const progressPerTab = 100 / (tabs.length - 1);
+    return progressPerTab * activeTab;
+  };
+
+  if (isSubmitted) {
+    return <ThankYou />;
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col" dir="rtl" style={{fontFamily: 'Assistant, sans-serif'}}>
+      {/* Hero Image Section */}
+      <div className="w-full h-[35vh]">
+        <img src="https://i.postimg.cc/QdKMfGDM/Component-1-1-1.png" alt="Nahariya Beach" className="w-full h-full object-cover" />
+      </div>
+
+      <div className="flex-1 flex flex-col w-full">
+        {/* Welcome Section */}
+        <div className="bg-white mb-0">
+          <div className="max-w-4xl mx-auto px-4 pt-4 pb-0 text-right">
+            <h1 className="font-extrabold mb-3" style={{ fontSize: '22px', lineHeight: '28px', color: '#3459B1' }}>
+              חדש בנהריה? חדשה בעיר?<br />איזה כיף שהגעת!
+            </h1>
+            <p className="font-bold text-black" style={{ fontSize: '16px', lineHeight: '22px' }}>
+              עיריית נהריה מברכת אותך עם כניסתך לביתך החדש
+              <br />
+              ומזמינה אותך להנות מכל מה שיש לעיר להציע.
+            </p>
+            <p className="font-normal text-black mt-3" style={{ fontSize: '16px', lineHeight: '22px' }}>
+              בימים אלו אנו משיקים שירות חדש המרכז במקום אחד, את כלל השירותים העירוניים והפעולות שיש לבצע בשנה הראשונה בעיר.
+            </p>
+          
+            <p className="font-bold text-black" style={{ fontSize: '16px', lineHeight: '22px' }}>לפני הכל, נשמח להכיר אותך!</p>
+          </div>
+        </div>
+
+        {/* טאבים עם דרופ דאון */}
+        <div className="px-4 py-6">
+          <div className="max-w-4xl mx-auto space-y-3">
+            <div className="relative">
+              <div 
+                className="bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center"
+                onClick={() => setIsDurationOpen(!isDurationOpen)}
+              >
+                <span className="text-gray-700">
+                  {selectedDuration || 'כמה זמן את.ה מתגורר.ת בנהריה?'}
+                </span>
+                <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isDurationOpen ? 'transform rotate-180' : ''}`} />
+              </div>
+              {isDurationOpen && (
+                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg" style={{ height: '200px', overflowY: 'auto' }}>
+                  {['עדיין לא עברתי', '0-3 חודשים', '3-6 חודשים', '6-12 חודשים', '12+ חודשים'].map((duration) => (
+                    <div
+                      key={duration}
+                      className="p-3 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setSelectedDuration(duration);
+                        setIsDurationOpen(false);
+                      }}
+                    >
+                      {duration}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <div 
+                className="bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center"
+                onClick={() => setIsFeelingOpen(!isFeelingOpen)}
+              >
+                <span className="text-gray-700">
+                  {selectedFeeling || 'עד כמה את.ה מרגיש.ה בבית בנהריה?'}
+                </span>
+                <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isFeelingOpen ? 'transform rotate-180' : ''}`} />
+              </div>
+              {isFeelingOpen && (
+                <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg" style={{ height: '200px', overflowY: 'auto' }}>
+                  {['עדיין לא התחברתי', 'מתרגל.ת לעיר', 'התמקמתי פה', 'בנהריה אני בבית'].map((feeling) => (
+                    <div
+                      key={feeling}
+                      className="p-3 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setSelectedFeeling(feeling);
+                        setIsFeelingOpen(false);
+                      }}
+                    >
+                      {feeling}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* כותרת לטאבים עם פס התקדמות צמוד */}
+        <div className="sticky top-0 bg-white z-20 shadow-lg">
+          <div className="px-4 py-5">
+            <h3 className="text-xl font-bold text-blue-600 mb-5 text-center">
+              ריכוז הפעולות לקליטה בעיר
+            </h3>
+            
+            {/* פס התקדמות */}
+            <div className="max-w-4xl mx-auto">
+              <div className="relative py-6">
+                {/* הפס עצמו */}
+                <div className="relative h-1.5 bg-gray-100 rounded-full mx-8">
+                  <div 
+                    className="absolute top-0 right-0 h-full transition-all duration-700 ease-out rounded-full"
+                    style={{
+                      width: `${(activeTab / (tabs.length - 1)) * 100}%`,
+                      backgroundColor: tabs[activeTab].progressColor,
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                  </div>
+                </div>
+                
+                {/* הנקודות */}
+                <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between">
+                  {tabs.map((tab, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleTabClick(index)}
+                      className="relative w-10 h-10 flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110"
+                    >
+                      <svg width="32.877" height="32.877" viewBox="0 0 32.877 32.877" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M221,80.145a23.017,23.017,0,0,0,1.023,6.809,23.156,23.156,0,0,0-9.629,9.63,23.165,23.165,0,0,0-13.618,0,23.169,23.169,0,0,0-9.63-9.63,23.165,23.165,0,0,0,0-13.618,23.171,23.171,0,0,0,9.63-9.629,23.164,23.164,0,0,0,13.618,0,23.162,23.162,0,0,0,9.629,9.629A23.025,23.025,0,0,0,221,80.145"
+                          transform="translate(-189.148,-63.707)"
+                          fill={index <= activeTab ? tab.progressColor : '#d1d5db'}
+                        />
+                        <text
+                          x="50%"
+                          y="50%"
+                          fill="#fff"
+                          fontSize="16"
+                          fontFamily="Assistant, sans-serif"
+                          fontWeight="700"
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                        >
+                          {String(index + 1).padStart(2, '0')}
+                        </text>
+                      </svg>
+                      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        {tab.title}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* מידע נוכחי */}
+              <div className="text-center">
+                <div className="inline-flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2">
+                  <span className="text-sm text-gray-600">שלב {activeTab + 1} מתוך {tabs.length}:</span>
+                  <span 
+                    className="font-semibold"
+                    style={{ color: tabs[activeTab].progressColor }}
+                  >
+                    {tabs[activeTab].title}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* אזור הטאבים עם מספרים */}
+        <div className="flex-1 px-4 py-6 overflow-y-auto">
+          <div className="flex max-w-4xl mx-auto">
+            <div className="flex-1 space-y-4">
+              {tabs.map((tab, tabIndex) => (
+                <div key={tabIndex} className="relative flex items-start gap-4">
+                  <div className="flex-1 order-2">
+                    <div 
+                      className={`text-white px-6 cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                        tabIndex === activeTab ? 'rounded-t-2xl' : 'rounded-2xl'
+                      }`}
+                      style={{ 
+                        backgroundColor: tab.color,
+                        height: '51px'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = tab.hoverColor}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = tab.color}
+                      onClick={() => handleTabClick(tabIndex)}
+                    >
+                      <div className="flex items-center justify-between h-full">
+                        <div className="flex items-center">
+                          <span className="text-lg font-semibold">{tab.title}</span>
+                        </div>
+                        <div className="flex items-center">
+                          {tabIndex < activeTab && (
+                            <div className="w-6 h-6 bg-white bg-opacity-30 rounded-full flex items-center justify-center ml-2">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                          <ChevronLeft className={`w-5 h-5 transition-transform duration-300 ${tabIndex === activeTab ? 'rotate-90' : ''}`} />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {tabIndex === activeTab && (
+                      <div className="bg-white rounded-b-lg rounded-tr-lg shadow-sm p-3 space-y-2 -mt-1">
+                        
+                        {/* תוכן הטאב */}
+                        {tab.sections ? (
+                          /* טאבים עם סעיפים */
+                          <div className="space-y-2">
+                            {tab.sections.map((section, sectionIndex) => (
+                              <div key={sectionIndex}>
+                                <div className="bg-white p-3">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <h4 className="font-bold text-gray-800 mb-1">{section.title}</h4>
+                                      <div className="flex flex-col space-y-1 mb-1">
+                                        <label className="flex items-center cursor-pointer">
+                                          <input
+                                            type="radio"
+                                            name={`tab${tabIndex}-section-${sectionIndex}`}
+                                            checked={sectionChoices[`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`] === 'completed'}
+                                            onChange={() => handleSectionChoice(`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`, 'completed')}
+                                            className="appearance-none w-[11px] h-[11px] rounded-full border border-gray-400 checked:bg-black checked:border-black ml-1"
+                                          />
+                                          <span className="text-sm text-gray-700">ביצעתי</span>
+                                        </label>
+                                        <label className="flex items-center cursor-pointer">
+                                          <input
+                                            type="radio"
+                                            name={`tab${tabIndex}-section-${sectionIndex}`}
+                                            checked={sectionChoices[`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`] === 'notRelevant'}
+                                            onChange={() => handleSectionChoice(`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`, 'notRelevant')}
+                                            className="appearance-none w-[11px] h-[11px] rounded-full border border-gray-400 checked:bg-black checked:border-black ml-1"
+                                          />
+                                          <span className="text-sm text-gray-700">לא רלוונטי עבורי</span>
+                                        </label>
+                                      </div>
+                                      <div className="text-sm">
+                                        <span className="text-gray-600">לביצוע הפעולה לחץ </span>
+                                        {section.title === 'העברת תשלומי ארנונה על שמי' ? (
+                                          <a 
+                                            href="https://forms.milgam.co.il/nahariya/forms/230/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'קבלת שוברים לתשלום במייל' ? (
+                                          <a 
+                                            href="https://forms.milgam.co.il/nahariya/forms/204/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'אישור העדר חובות לעירייה' ? (
+                                          <a 
+                                            href="https://forms.milgam.co.il/nahariya/forms/200/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'קבלת תו חניה נהרייני' ? (
+                                          <a 
+                                            href="https://nahariyani.co.il/#home"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'רישום למסגרות חינוך' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'רישום ילדים לצהרון' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'רישום ילדים לקייטנות קיץ' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'טפסים ושירותים בתחום החינוך' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'הצטרפות לקבוצת וואטסאפ' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/740/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'בילוי ופנאי לותיקים' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/318/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'ספרייה העירונית מידעטק' ? (
+                                          <a 
+                                            href="https://nahariya.library.org.il/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'התעניינות / רישום עסק חדש בעיר' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'למידע על סיוע לעסקים מקומיים' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'בילוי ופנאי לצעירים ומשפחות' ? (
+                                          <a 
+                                            href="https://www.nahariya.muni.il/318/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'טופס פניה למוקד 106' ? (
+                                          <a 
+                                            href="https://forms.milgam.co.il/nahariya/forms/232/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : section.title === 'שאלון מועמדים להגרלת הדירות של עמידר' ? (
+                                          <a 
+                                            href="https://www.amidar.co.il/%D7%A9%D7%90%D7%9C%D7%95%D7%9F-%D7%9E%D7%A2%D7%95%D7%9E%D7%93%D7%99%D7%9D-%D7%9C%D7%94%D7%92%D7%A8%D7%9C%D7%AA-%D7%94%D7%93%D7%99%D7%A8%D7%95%D7%AA-%D7%A9%D7%9C-%D7%A2%D7%9E%D7%99%D7%93%D7%A8/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                          >
+                                            כאן
+                                          </a>
+                                        ) : (
+                                          <button className="font-bold text-blue-600 hover:text-blue-800 underline">
+                                            כאן
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {sectionIndex < tab.sections.length - 1 && (
+                                  <hr className="my-2 border-gray-300 border-dashed" />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
+                        
+                        {/* כפתורי ניווט - לכל הטאבים */}
+                        <div className="mt-6 flex justify-between">
+                          {activeTab > 0 ? (
+                            <button
+                              onClick={handlePrev}
+                              className="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition-colors flex items-center justify-center shadow-md"
+                            >
+                              <ChevronRight className="w-3.5 h-3.5 ml-2" />
+                              הקודם
+                            </button>
+                          ) : (
+                            <div></div>
+                          )}
+                          
+                          {activeTab < tabs.length - 1 ? (
+                            <button
+                              onClick={handleNext}
+                              className={`bg-[${tabs[activeTab].color}] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[${tabs[activeTab].hoverColor}] transition-colors flex items-center justify-center shadow-md`}
+                            >
+                              הבא
+                              <ChevronLeft className="w-3.5 h-3.5 mr-2" />
+                            </button>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mr-0 mt-2 flex-shrink-0 flex flex-col items-center order-1 relative">
+                    <div
+                      className={`w-10 h-10 flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 relative`}
+                      onClick={() => handleTabClick(tabIndex)}
+                    >
+                      <svg width="32.877" height="32.877" viewBox="0 0 32.877 32.877" xmlns="http://www.w3.org/2000/svg">
+                        <path 
+                          d="M221,80.145a23.017,23.017,0,0,0,1.023,6.809,23.156,23.156,0,0,0-9.629,9.63,23.165,23.165,0,0,0-13.618,0,23.169,23.169,0,0,0-9.63-9.63,23.165,23.165,0,0,0,0-13.618,23.171,23.171,0,0,0,9.63-9.629,23.164,23.164,0,0,0,13.618,0,23.162,23.162,0,0,0,9.629,9.629A23.025,23.025,0,0,0,221,80.145" 
+                          transform="translate(-189.148,-63.707)" 
+                          fill={
+                            tabIndex < activeTab 
+                              ? '#9ca3af' 
+                              : tabIndex === activeTab
+                                ? (tabIndex === 0 ? '#FF8201' : 
+                                   tabIndex === 1 ? '#FF9C33' :
+                                   tabIndex === 2 ? '#65D0FA' :
+                                   tabIndex === 3 ? '#3459B1' :
+                                   tabIndex === 4 ? '#04B46B' :
+                                   tabIndex === 5 ? '#FFCF01' : '#9ca3af')
+                                : '#d1d5db'
+                          }
+                        />
+                        <text 
+                          x="50%" 
+                          y="50%" 
+                          fill="#fff" 
+                          fontSize="16" 
+                          fontFamily="Assistant, sans-serif" 
+                          fontWeight="700" 
+                          textAnchor="middle" 
+                          dominantBaseline="central"
+                        >
+                          {(tabIndex + 1) < 10 ? `0${tabIndex + 1}` : (tabIndex + 1)}
+                        </text>
+                      </svg>
+                      
+                      {/* סימון V לשלבים שהושלמו */}
+                      {tabIndex < activeTab && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* סקשן "?המידע עזר לי" */}
+        <div className="px-4 py-6">
+          <div className="max-w-md mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-4">
+              <h4 className="text-lg font-bold text-gray-800 mb-6 text-center">
+                ?המידע עזר לי
+              </h4>
+              <div className="flex justify-center gap-6">
+                <button 
+                  onClick={() => setFeedbackChoice('like')}
+                  className={`flex items-center justify-center hover:scale-110 transition-transform ${
+                    feedbackChoice === 'like' ? 'scale-110' : ''
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 38.452 38.453">
+                    <path d="M0,19.226A19.226,19.226,0,1,0,19.226,0,19.226,19.226,0,0,0,0,19.226" transform="translate(0)" fill="#4080ff"/>
+                    <path d="M27.057,12.388h3.157a.882.882,0,0,1,.882.882V24.221a.882.882,0,0,1-.882.881H27.057a.882.882,0,0,1-.882-.881V13.27a.882.882,0,0,1,.882-.882m-13.7,2.954a4.086,4.086,0,0,0-1.481,1.316,3.348,3.348,0,0,0-.164,2.139A2.643,2.643,0,0,0,10.4,21.1a2.6,2.6,0,0,0,.823,2.468c-1.152,2.632.658,3.454.658,3.454h5.758s-1.316,6.251,1.81,6.416c1.618.085,1.974-1.481,1.974-3.949S24.738,25.2,24.738,25.2V15.25l-1.722-.725a4.662,4.662,0,0,0-1.81-.365H15.991a4.332,4.332,0,0,0-2.632,1.182" transform="translate(-2.672 -3.19)" fill="#fff"/>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => setFeedbackChoice('heart')}
+                  className={`flex items-center justify-center hover:scale-110 transition-transform ${
+                    feedbackChoice === 'heart' ? 'scale-110' : ''
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 38.452 38.453">
+                    <path d="M110.691,19.226A19.226,19.226,0,1,0,91.465,38.453a19.227,19.227,0,0,0,19.226-19.226" transform="translate(-72.239)" fill="#f25268"/>
+                    <path d="M105.86,19.124c0-4.078-3.311-7.384-6.581-7.384a5.917,5.917,0,0,0-5.25,3.973A5.915,5.915,0,0,0,88.78,11.74c-3.27,0-6.581,3.306-6.581,7.384,0,4.2,2.951,6.349,5.5,8.6,1.9,1.679,4.466,3.358,6.369,5.037,2.528-2.228,5.714-4.457,8.241-6.685,2.012-1.773,3.552-3.769,3.552-6.949" transform="translate(-75 -3.023)" fill="#fff"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* כפתור שליחה */}
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className={`w-full text-white font-semibold flex items-center justify-center transition-all shadow-lg ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
+              }`}
+              style={{ 
+                backgroundColor: '#3459b1',
+                fontSize: '17px',
+                fontWeight: '600',
+                height: '46px',
+                borderRadius: '23px'
+              }}
+            >
+              <span>{isSubmitting ? 'שולח...' : 'שליחה'}</span>
+              {!isSubmitting && (
+                <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
+                  <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  );
+};
+
+export default FullPageWithTabs;
