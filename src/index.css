@@ -33,4 +33,10 @@ code {
     color: #3459B1;
     font-size: 1.25rem;
     font-weight: bold;
+}
+
+.font-bold.text-blue-600.hover\:text-blue-800.underline {
+    color: #65D0FA;
+    font-size: 1rem;
+    font-weight: bold;
 } 
