@@ -30,6 +30,7 @@ const FullPageWithTabs = () => {
   const [isFeelingOpen, setIsFeelingOpen] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionMessage, setSubmissionMessage] = useState<string>('');
+  const [submissionError, setSubmissionError] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({
     0: 'notRelevant',
@@ -274,14 +275,30 @@ const FullPageWithTabs = () => {
   };
 
   const handleSubmit = async () => {
+    // איפוס הודעות קודמות
+    setSubmissionError('');
+    setSubmissionMessage('');
+    
     // בדיקת שדות חובה
-    if (!selectedDuration || !selectedFeeling) {
-      setSubmissionMessage('אנא השלם את שתי השאלות הראשונות לפני השליחה');
+    const errors = [];
+    
+    if (!selectedDuration) {
+      errors.push('אנא בחר.י כמה זמן את.ה מתגורר.ת בנהריה');
+    }
+    
+    if (!selectedFeeling) {
+      errors.push('אנא בחר.י עד כמה את.ה מרגיש.ה בבית בנהריה');
+    }
+    
+    // אם יש שגיאות, הצג אותן ועצור
+    if (errors.length > 0) {
+      setSubmissionError(errors.join('\n'));
+      // גלול למעלה כדי להראות את השגיאה
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setIsSubmitting(true);
-    setSubmissionMessage('');
     
     // איסוף כל הנתונים מהטופס
     const data = {
@@ -335,6 +352,7 @@ const FullPageWithTabs = () => {
           });
           setActiveTab(0);
           setSubmissionMessage('');
+          setSubmissionError('');
           setIsSubmitted(false);
         }, 3000);
         navigate('/thankyou');
@@ -343,7 +361,7 @@ const FullPageWithTabs = () => {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmissionMessage('אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.');
+      setSubmissionError('אירעה שגיאה בשליחת הטופס. אנא נסה שוב מאוחר יותר.');
       setIsSubmitted(false);
     } finally {
       setIsSubmitting(false);
@@ -381,6 +399,55 @@ const FullPageWithTabs = () => {
         <img src="https://i.postimg.cc/QdKMfGDM/Component-1-1-1.png" alt="Nahariya Beach" className="w-full h-full object-cover" />
       </div>
 
+      {/* אזור הודעות שגיאה */}
+      {submissionError && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mx-4 mt-4 rounded-lg shadow-md">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="mr-3">
+              <h3 className="text-sm font-medium text-red-800 mb-1">
+                יש לתקן את השגיאות הבאות:
+              </h3>
+              <div className="text-sm text-red-700 whitespace-pre-line">
+                {submissionError}
+              </div>
+            </div>
+            <div className="mr-auto pr-3">
+              <button
+                onClick={() => setSubmissionError('')}
+                className="text-red-400 hover:text-red-600"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* הודעת הצלחה */}
+      {submissionMessage && (
+        <div className="bg-green-50 border-l-4 border-green-400 p-4 mx-4 mt-4 rounded-lg shadow-md">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="mr-3">
+              <p className="text-sm text-green-700">
+                {submissionMessage}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex-1 flex flex-col w-full">
         {/* Welcome Section */}
         <div className="bg-white mb-0">
@@ -406,11 +473,13 @@ const FullPageWithTabs = () => {
           <div className="max-w-4xl mx-auto space-y-3">
             <div className="relative">
               <div 
-                className="bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center"
+                className={`bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center ${
+                  !selectedDuration && submissionError ? 'border-2 border-red-400' : ''
+                }`}
                 onClick={() => setIsDurationOpen(!isDurationOpen)}
               >
-                <span className="text-gray-700">
-                  {selectedDuration || 'כמה זמן את.ה מתגורר.ת בנהריה?'}
+                <span className={`${!selectedDuration ? 'text-gray-500' : 'text-gray-700'}`}>
+                  {selectedDuration || 'כמה זמן את.ה מתגורר.ת בנהריה? *'}
                 </span>
                 <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isDurationOpen ? 'transform rotate-180' : ''}`} />
               </div>
@@ -423,6 +492,10 @@ const FullPageWithTabs = () => {
                       onClick={() => {
                         setSelectedDuration(duration);
                         setIsDurationOpen(false);
+                        // הסתר שגיאה אם היא הייתה מוצגת
+                        if (submissionError && selectedFeeling) {
+                          setSubmissionError('');
+                        }
                       }}
                     >
                       {duration}
@@ -434,11 +507,13 @@ const FullPageWithTabs = () => {
 
             <div className="relative">
               <div 
-                className="bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center"
+                className={`bg-white p-4 rounded-lg shadow-md cursor-pointer flex justify-between items-center ${
+                  !selectedFeeling && submissionError ? 'border-2 border-red-400' : ''
+                }`}
                 onClick={() => setIsFeelingOpen(!isFeelingOpen)}
               >
-                <span className="text-gray-700">
-                  {selectedFeeling || 'עד כמה את.ה מרגיש.ה בבית בנהריה?'}
+                <span className={`${!selectedFeeling ? 'text-gray-500' : 'text-gray-700'}`}>
+                  {selectedFeeling || 'עד כמה את.ה מרגיש.ה בבית בנהריה? *'}
                 </span>
                 <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${isFeelingOpen ? 'transform rotate-180' : ''}`} />
               </div>
@@ -451,6 +526,10 @@ const FullPageWithTabs = () => {
                       onClick={() => {
                         setSelectedFeeling(feeling);
                         setIsFeelingOpen(false);
+                        // הסתר שגיאה אם היא הייתה מוצגת
+                        if (submissionError && selectedDuration) {
+                          setSubmissionError('');
+                        }
                       }}
                     >
                       {feeling}
@@ -908,6 +987,11 @@ const FullPageWithTabs = () => {
                 </svg>
               )}
             </button>
+            
+            {/* הודעה על שדות חובה */}
+            <p className="text-xs text-gray-500 text-center mt-3">
+              * שדות חובה למילוי
+            </p>
           </div>
         </div>
 
