@@ -14,4 +14,23 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Custom CSS overrides */
+.text-sm {
+    font-size: 1rem;
+    line-height: 1.25rem;
+}
+
+.text-gray-800 {
+    --tw-text-opacity: 1;
+    color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+    font-size: 1.05rem;
+}
+
+.text-blue-600 {
+    --tw-text-opacity: 1;
+    color: #3459B1;
+    font-size: 1.25rem;
+    font-weight: bold;
 } 
