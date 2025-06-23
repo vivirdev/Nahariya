@@ -21,7 +21,7 @@ interface Tab {
 }
 
 const FullPageWithTabs = () => {
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
@@ -32,25 +32,7 @@ const FullPageWithTabs = () => {
   const [submissionMessage, setSubmissionMessage] = useState<string>('');
   const [submissionError, setSubmissionError] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({
-    0: 'notRelevant',
-    1: 'completed',   
-    2: 'notRelevant',
-    'tab1-0': 'notRelevant',
-    'tab2-0': 'notRelevant',
-    'tab2-1': 'completed',
-    'tab3-0': 'notRelevant',
-    'tab3-1': 'completed',
-    'tab3-2': 'notRelevant',
-    'tab3-3': 'notRelevant',
-    'tab4-0': 'notRelevant',
-    'tab4-1': 'completed',
-    'tab4-2': 'notRelevant',
-    'tab4-3': 'notRelevant',
-    'tab5-0': 'notRelevant',
-    'tab5-1': 'completed',
-    'tab5-2': 'notRelevant'
-  });
+  const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({});
 
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
@@ -70,9 +52,9 @@ const FullPageWithTabs = () => {
   };
 
   const handleTabClick = (index: number) => {
-    setActiveTab(index);
+    setActiveTab(prev => (prev === index ? null : index));
     const tabElement = document.getElementById(`tab-${index}`);
-    if (tabElement) {
+    if (tabElement && activeTab !== index) {
       const stickyHeaderHeight = 120; // גובה האיזור הסטיקי
       const tabPosition = tabElement.offsetTop - stickyHeaderHeight;
       window.scrollTo({
@@ -83,7 +65,7 @@ const FullPageWithTabs = () => {
   };
 
   const handleNext = () => {
-    if (activeTab < tabs.length - 1) {
+    if (activeTab !== null && activeTab < tabs.length - 1) {
       setActiveTab(activeTab + 1);
       const nextTabElement = document.getElementById(`tab-${activeTab + 1}`);
       if (nextTabElement) {
@@ -98,7 +80,7 @@ const FullPageWithTabs = () => {
   };
 
   const handlePrev = () => {
-    if (activeTab > 0) {
+    if (activeTab !== null && activeTab > 0) {
       setActiveTab(activeTab - 1);
       const prevTabElement = document.getElementById(`tab-${activeTab - 1}`);
       if (prevTabElement) {
@@ -331,26 +313,8 @@ const FullPageWithTabs = () => {
           setSelectedDuration(null);
           setSelectedFeeling(null);
           setFeedbackChoice(null);
-          setSectionChoices({
-            0: 'notRelevant',
-            1: 'completed',   
-            2: 'notRelevant',
-            'tab1-0': 'notRelevant',
-            'tab2-0': 'notRelevant',
-            'tab2-1': 'completed',
-            'tab3-0': 'notRelevant',
-            'tab3-1': 'completed',
-            'tab3-2': 'notRelevant',
-            'tab3-3': 'notRelevant',
-            'tab4-0': 'notRelevant',
-            'tab4-1': 'completed',
-            'tab4-2': 'notRelevant',
-            'tab4-3': 'notRelevant',
-            'tab5-0': 'notRelevant',
-            'tab5-1': 'completed',
-            'tab5-2': 'notRelevant'
-          });
-          setActiveTab(0);
+          setSectionChoices({});
+          setActiveTab(null);
           setSubmissionMessage('');
           setSubmissionError('');
           setIsSubmitted(false);
@@ -380,7 +344,7 @@ const FullPageWithTabs = () => {
 
   // חישוב אחוז ההתקדמות לפס
   const getProgressPercentage = () => {
-    if (activeTab === 0) return 0;
+    if (activeTab === null) return 0;
     if (activeTab >= tabs.length - 1) return 100;
     
     // חישוב האחוז בהתאם למיקום הטאב הנוכחי
@@ -556,8 +520,8 @@ const FullPageWithTabs = () => {
                   <div 
                     className="absolute top-0 right-0 h-full transition-all duration-700 ease-out rounded-full"
                     style={{
-                      width: `${(activeTab / (tabs.length - 1)) * 100}%`,
-                      backgroundColor: tabs[activeTab].progressColor,
+                      width: `${(activeTab === null ? 0 : activeTab / (tabs.length - 1)) * 100}%`,
+                      backgroundColor: tabs[activeTab === null ? 0 : activeTab].progressColor,
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}
                   >
@@ -577,7 +541,7 @@ const FullPageWithTabs = () => {
                         <path
                           d="M221,80.145a23.017,23.017,0,0,0,1.023,6.809,23.156,23.156,0,0,0-9.629,9.63,23.165,23.165,0,0,0-13.618,0,23.169,23.169,0,0,0-9.63-9.63,23.165,23.165,0,0,0,0-13.618,23.171,23.171,0,0,0,9.63-9.629,23.164,23.164,0,0,0,13.618,0,23.162,23.162,0,0,0,9.629,9.629A23.025,23.025,0,0,0,221,80.145"
                           transform="translate(-189.148 -63.707)"
-                          fill={index <= activeTab ? tab.progressColor : '#d1d5db'}
+                          fill={index <= (activeTab === null ? 0 : activeTab) ? tabs[index].progressColor : '#d1d5db'}
                         />
                         <text
                           x="50%"
@@ -589,7 +553,7 @@ const FullPageWithTabs = () => {
                           textAnchor="middle"
                           dominantBaseline="central"
                         >
-                          {String(index + 1).padStart(2, '0')}
+                          {String((index + 1).toString().padStart(2, '0'))}
                         </text>
                       </svg>
                       <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -603,12 +567,12 @@ const FullPageWithTabs = () => {
               {/* מידע נוכחי */}
               <div className="text-center">
                 <div className="inline-flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2">
-                  <span className="text-sm text-gray-600">שלב {activeTab + 1} מתוך {tabs.length}:</span>
+                  <span className="text-sm text-gray-600">שלב {(activeTab === null ? 0 : activeTab) + 1} מתוך {tabs.length}:</span>
                   <span 
                     className="font-semibold"
-                    style={{ color: tabs[activeTab].progressColor }}
+                    style={{ color: tabs[activeTab === null ? 0 : activeTab].progressColor }}
                   >
-                    {tabs[activeTab].title}
+                    {tabs[activeTab === null ? 0 : activeTab].title}
                   </span>
                 </div>
               </div>
@@ -640,7 +604,7 @@ const FullPageWithTabs = () => {
                           <span className="text-lg font-semibold">{tab.title}</span>
                         </div>
                         <div className="flex items-center">
-                          {tabIndex < activeTab && (
+                          {activeTab !== null && tabIndex < activeTab && (
                             <div className="w-6 h-6 bg-white bg-opacity-30 rounded-full flex items-center justify-center ml-2">
                               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -652,7 +616,7 @@ const FullPageWithTabs = () => {
                       </div>
                     </div>
                     
-                    {tabIndex === activeTab && (
+                    {activeTab === tabIndex && (
                       <div className="bg-white rounded-b-lg rounded-tr-lg shadow-sm p-3 space-y-2 -mt-1">
                         
                         {/* תוכן הטאב */}
@@ -849,82 +813,8 @@ const FullPageWithTabs = () => {
                             ))}
                           </div>
                         ) : null}
-                        
-                        {/* כפתורי ניווט - לכל הטאבים */}
-                        <div className="mt-6 flex justify-between">
-                          {activeTab > 0 ? (
-                            <button
-                              onClick={handlePrev}
-                              className="bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 transition-colors flex items-center justify-center shadow-md"
-                            >
-                              <ChevronRight className="w-3.5 h-3.5 ml-2" />
-                              הקודם
-                            </button>
-                          ) : (
-                            <div></div>
-                          )}
-                          
-                          {activeTab < tabs.length - 1 ? (
-                            <button
-                              onClick={handleNext}
-                              className={`bg-[${tabs[activeTab].color}] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[${tabs[activeTab].hoverColor}] transition-colors flex items-center justify-center shadow-md`}
-                            >
-                              הבא
-                              <ChevronLeft className="w-3.5 h-3.5 mr-2" />
-                            </button>
-                          ) : (
-                            <div></div>
-                          )}
-                        </div>
                       </div>
                     )}
-                  </div>
-
-                  <div className="mr-0 mt-2 flex-shrink-0 flex flex-col items-center order-1 relative">
-                    <div
-                      className={`w-10 h-10 flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 relative`}
-                      onClick={() => handleTabClick(tabIndex)}
-                    >
-                      <svg width="32.877" height="32.877" viewBox="0 0 32.877 32.877" xmlns="http://www.w3.org/2000/svg">
-                        <path 
-                          d="M221,80.145a23.017,23.017,0,0,0,1.023,6.809,23.156,23.156,0,0,0-9.629,9.63,23.165,23.165,0,0,0-13.618,0,23.169,23.169,0,0,0-9.63-9.63,23.165,23.165,0,0,0,0-13.618,23.171,23.171,0,0,0,9.63-9.629,23.164,23.164,0,0,0,13.618,0,23.162,23.162,0,0,0,9.629,9.629A23.025,23.025,0,0,0,221,80.145" 
-                          transform="translate(-189.148 -63.707)" 
-                          fill={
-                            tabIndex < activeTab 
-                              ? '#9ca3af' 
-                              : tabIndex === activeTab
-                                ? (tabIndex === 0 ? '#FF8201' : 
-                                   tabIndex === 1 ? '#FF9C33' :
-                                   tabIndex === 2 ? '#65D0FA' :
-                                   tabIndex === 3 ? '#3459B1' :
-                                   tabIndex === 4 ? '#04B46B' :
-                                   tabIndex === 5 ? '#FFCF01' : '#9ca3af')
-                                : '#d1d5db'
-                          }
-                        />
-                        <text 
-                          x="50%" 
-                          y="50%" 
-                          fill="#fff" 
-                          fontSize="16" 
-                          fontFamily="Assistant, sans-serif" 
-                          fontWeight="700" 
-                          textAnchor="middle" 
-                          dominantBaseline="central"
-                        >
-                          {(tabIndex + 1) < 10 ? `0${tabIndex + 1}` : (tabIndex + 1)}
-                        </text>
-                      </svg>
-                      
-                      {/* סימון V לשלבים שהושלמו */}
-                      {tabIndex < activeTab && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               ))}

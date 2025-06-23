@@ -56,33 +56,32 @@ code {
 
 /* Mobile-only styles */
 @media (max-width: 768px) {
-    .text-sm {
-        font-size: 1rem;
-        line-height: 1.25rem;
+    body {
+        font-size: 18px;
     }
-
+    .text-sm {
+        font-size: 1.1rem;
+        line-height: 1.5rem;
+    }
     .text-gray-500 {
         --tw-text-opacity: 1;
         color: rgb(0 0 0);
         font-weight: 600;
     }
-
     .text-gray-800 {
         --tw-text-opacity: 1;
         color: rgb(31 41 55 / var(--tw-text-opacity, 1));
-        font-size: 1.05rem;
+        font-size: 1.2rem;
     }
-
     .text-blue-600 {
         --tw-text-opacity: 1;
         color: #3459B1;
-        font-size: 1.25rem;
+        font-size: 1.4rem;
         font-weight: bold;
     }
-
     .font-bold.text-blue-600.hover\:text-blue-800.underline {
         color: #65D0FA;
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: bold;
     }
 }
