@@ -36,6 +36,7 @@ const FullPageWithTabs = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const [modalTitle, setModalTitle] = useState<string | null>(null);
+  const [iframeLoading, setIframeLoading] = useState(false);
 
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
@@ -367,6 +368,13 @@ const FullPageWithTabs = () => {
     };
   }, [showModal]);
 
+  const handleOpenModal = (url: string, title: string) => {
+    setModalUrl(url);
+    setModalTitle(title);
+    setIframeLoading(true);
+    setShowModal(true);
+  };
+
   if (isSubmitted) {
     return <ThankYou />;
   }
@@ -690,7 +698,7 @@ const FullPageWithTabs = () => {
                                             return (
                                               <button
                                                 type="button"
-                                                onClick={() => { setModalUrl(url); setModalTitle(section.title); setShowModal(true); }}
+                                                onClick={() => handleOpenModal(url, section.title)}
                                                 className="font-bold text-blue-600 hover:text-blue-800 underline"
                                               >
                                                 כאן
@@ -812,15 +820,33 @@ const FullPageWithTabs = () => {
                   בסיום המילוי, חזור לאפליקציה להמשך התהליך
                 </div>
               </div>
+              {/* Loader Spinner */}
+              {iframeLoading && (
+                <div className="flex items-center justify-center h-full absolute inset-0 bg-white bg-opacity-80 z-20">
+                  <div className="loader" />
+                </div>
+              )}
               <iframe
                 src={modalUrl}
                 title={modalTitle}
                 className="w-full h-full rounded-b-lg border-0 flex-1"
+                onLoad={() => setIframeLoading(false)}
+                style={iframeLoading ? { visibility: 'hidden' } : { visibility: 'visible' }}
               />
             </div>
             <style>{`
-              @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-              @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+              .loader {
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3459B1;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+              }
+              @keyframes spin {
+                0% { transform: rotate(0deg);}
+                100% { transform: rotate(360deg);}
+              }
             `}</style>
           </div>
         )}
