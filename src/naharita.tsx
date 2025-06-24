@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronDown, ChevronRight, ThumbsUp, Heart, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThankYou from './ThankYou';
@@ -33,6 +33,9 @@ const FullPageWithTabs = () => {
   const [submissionError, setSubmissionError] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({});
+  const [showModal, setShowModal] = useState(false);
+  const [modalUrl, setModalUrl] = useState<string | null>(null);
+  const [modalTitle, setModalTitle] = useState<string | null>(null);
 
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
@@ -352,6 +355,18 @@ const FullPageWithTabs = () => {
     return progressPerTab * activeTab;
   };
 
+  // מניעת גלילה של הרקע כשהפופאפ פתוח
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showModal]);
+
   if (isSubmitted) {
     return <ThankYou />;
   }
@@ -653,155 +668,40 @@ const FullPageWithTabs = () => {
                                       </div>
                                       <div className="text-sm">
                                         <span className="text-gray-600">לביצוע הפעולה לחץ </span>
-                                        {section.title === 'העברת תשלומי ארנונה על שמי' ? (
-                                          <a 
-                                            href="https://forms.milgam.co.il/nahariya/forms/230/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'קבלת שוברים לתשלום במייל' ? (
-                                          <a 
-                                            href="https://forms.milgam.co.il/nahariya/forms/204/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'אישור העדר חובות לעירייה' ? (
-                                          <a 
-                                            href="https://forms.milgam.co.il/nahariya/forms/200/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'קבלת תו חניה נהרייני' ? (
-                                          <a 
-                                            href="https://nahariyani.co.il/#home"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'רישום למסגרות חינוך' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'רישום ילדים לצהרון' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'רישום ילדים לקייטנות קיץ' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'טפסים ושירותים בתחום החינוך' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9D/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'הצטרפות לקבוצת וואטסאפ' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/740/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'בילוי ופנאי לותיקים' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/318/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'ספרייה העירונית מידעטק' ? (
-                                          <a 
-                                            href="https://nahariya.library.org.il/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'התעניינות / רישום עסק חדש בעיר' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'למידע על סיוע לעסקים מקומיים' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'בילוי ופנאי לצעירים ומשפחות' ? (
-                                          <a 
-                                            href="https://www.nahariya.muni.il/318/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'טופס פניה למוקד 106' ? (
-                                          <a 
-                                            href="https://forms.milgam.co.il/nahariya/forms/232/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : section.title === 'שאלון מועמדים להגרלת הדירות של עמידר' ? (
-                                          <a 
-                                            href="https://www.amidar.co.il/%D7%A9%D7%90%D7%9C%D7%95%D7%9F-%D7%9E%D7%A2%D7%95%D7%9E%D7%93%D7%99%D7%9D-%D7%9C%D7%94%D7%92%D7%A8%D7%9C%D7%AA-%D7%94%D7%93%D7%99%D7%A8%D7%95%D7%AA-%D7%A9%D7%9C-%D7%A2%D7%9E%D7%99%D7%93%D7%A8/"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="font-bold text-blue-600 hover:text-blue-800 underline"
-                                          >
-                                            כאן
-                                          </a>
-                                        ) : (
-                                          <button className="font-bold text-blue-600 hover:text-blue-800 underline">
-                                            כאן
-                                          </button>
-                                        )}
+                                        {(() => {
+                                          let url = '';
+                                          if (section.title === 'העברת תשלומי ארנונה על שמי') url = 'https://forms.milgam.co.il/nahariya/forms/230/';
+                                          else if (section.title === 'קבלת שוברים לתשלום במייל') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
+                                          else if (section.title === 'אישור העדר חובות לעירייה') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
+                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariyani.co.il/#home';
+                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
+                                          else if (section.title === 'רישום ילדים לקייטנות קיץ') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
+                                          else if (section.title === 'טפסים ושירותים בתחום החינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
+                                          else if (section.title === 'הצטרפות לקבוצת וואטסאפ') url = 'https://www.nahariya.muni.il/740/';
+                                          else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
+                                          else if (section.title === 'ספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
+                                          else if (section.title === 'התעניינות / רישום עסק חדש בעיר') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/';
+                                          else if (section.title === 'למידע על סיוע לעסקים מקומיים') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/';
+                                          else if (section.title === 'בילוי ופנאי לצעירים ומשפחות') url = 'https://www.nahariya.muni.il/318/';
+                                          else if (section.title === 'טופס פניה למוקד 106') url = 'https://forms.milgam.co.il/nahariya/forms/232/';
+                                          else if (section.title === 'שאלון מועמדים להגרלת הדירות של עמידר') url = 'https://www.amidar.co.il/%D7%A9%D7%90%D7%9C%D7%95%D7%9F-%D7%9E%D7%A2%D7%95%D7%9E%D7%93%D7%99%D7%9D-%D7%9C%D7%94%D7%92%D7%A8%D7%9C%D7%AA-%D7%94%D7%93%D7%99%D7%A8%D7%95%D7%AA-%D7%A9%D7%9C-%D7%A2%D7%9E%D7%99%D7%93%D7%A8/';
+                                          else if (section.title === 'רישום ילדים לצהרון') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
+                                          if (url) {
+                                            return (
+                                              <button
+                                                type="button"
+                                                onClick={() => { setModalUrl(url); setModalTitle(section.title); setShowModal(true); }}
+                                                className="font-bold text-blue-600 hover:text-blue-800 underline"
+                                              >
+                                                כאן
+                                              </button>
+                                            );
+                                          } else {
+                                            return (
+                                              <span className="text-gray-400">אין קישור</span>
+                                            );
+                                          }
+                                        })()}
                                       </div>
                                     </div>
                                   </div>
@@ -885,7 +785,45 @@ const FullPageWithTabs = () => {
           </div>
         </div>
 
-
+        {/* מודל עם iframe */}
+        {showModal && modalUrl && modalTitle && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300 animate-fadeIn"
+            onClick={() => setShowModal(false)}
+            style={{ animation: 'fadeIn 0.3s' }}
+          >
+            <div
+              className="bg-white rounded-lg shadow-lg w-full max-w-md h-[80vh] relative flex flex-col animate-slideUp"
+              onClick={e => e.stopPropagation()}
+              style={{ animation: 'slideUp 0.3s' }}
+            >
+              <div className="flex flex-col px-4 py-3 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-lg text-[#3459B1]">{modalTitle}</span>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="text-gray-700 text-2xl font-bold hover:text-red-500 focus:outline-none"
+                    aria-label="סגור"
+                  >
+                    ✖️
+                  </button>
+                </div>
+                <div className="mt-2 text-sm text-blue-700 bg-blue-50 rounded px-2 py-1 text-center font-semibold">
+                  בסיום המילוי, חזור לאפליקציה להמשך התהליך
+                </div>
+              </div>
+              <iframe
+                src={modalUrl}
+                title={modalTitle}
+                className="w-full h-full rounded-b-lg border-0 flex-1"
+              />
+            </div>
+            <style>{`
+              @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            `}</style>
+          </div>
+        )}
       </div>
     </div>
   );
