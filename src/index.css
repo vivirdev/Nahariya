@@ -84,6 +84,20 @@ code {
         font-size: 1.1rem;
         font-weight: bold;
     }
+    button, a, [role="button"] {
+        min-height: 44px;
+        min-width: 30px;
+    }
+    
+    /* מניעת זום לא רצוי */
+    input, textarea, select {
+        font-size: 16px !important;
+    }
+    
+    /* שיפור ביצועים במובייל */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
 }
 
 /* Desktop prevention styles */
@@ -99,7 +113,7 @@ code {
     /* שיפור מגע במובייל */
     button, a, [role="button"] {
         min-height: 44px;
-        min-width: 44px;
+        min-width: 30px;
     }
     
     /* מניעת זום לא רצוי */
