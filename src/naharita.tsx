@@ -41,32 +41,24 @@ const FullPageWithTabs = () => {
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
 
-  const scrollToTab = (index: number) => {
-    const tabElement = tabRefs.current[index];
-    if (tabElement) {
-      const stickyHeaderHeight = 120; // גובה משוער של האיזור הסטיקי
-      const elementPosition = tabElement.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - stickyHeaderHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   const handleTabClick = (index: number) => {
     setActiveTab(prev => (prev === index ? null : index));
-    const tabElement = document.getElementById(`tab-${index}`);
-    if (tabElement && activeTab !== index) {
-      const stickyHeaderHeight = 120; // גובה האיזור הסטיקי
-      const tabPosition = tabElement.offsetTop - stickyHeaderHeight;
-      window.scrollTo({
-        top: tabPosition,
-        behavior: 'smooth'
-      });
-    }
   };
+
+  useEffect(() => {
+    if (activeTab !== null) {
+      const tabElement = document.getElementById(`tab-${activeTab}`);
+      if (tabElement) {
+        const stickyHeaderHeight = 120;
+        const extraOffset = 16;
+        const tabPosition = tabElement.offsetTop - stickyHeaderHeight - extraOffset;
+        window.scrollTo({
+          top: tabPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [activeTab]);
 
   const handleNext = () => {
     if (activeTab !== null && activeTab < tabs.length - 1) {
@@ -608,7 +600,7 @@ const FullPageWithTabs = () => {
           <div className="flex max-w-4xl mx-auto">
             <div className="flex-1 space-y-4">
               {tabs.map((tab, tabIndex) => (
-                <div key={tabIndex} className="relative flex items-start gap-4">
+                <div key={tabIndex} className="relative flex items-start gap-4" id={`tab-${tabIndex}`}>
                   <div className="flex-1 order-2">
                     <div 
                       className={`text-white px-6 cursor-pointer transition-all duration-300 transform hover:scale-105 shadow-lg ${
@@ -675,7 +667,7 @@ const FullPageWithTabs = () => {
                                         </label>
                                       </div>
                                       <div className="text-sm">
-                                        <span className="text-gray-600">לביצוע הפעולה לחץ </span>
+                                        <span className="text-gray-600">לביצוע הפעולה לחץ</span>
                                         {(() => {
                                           let url = '';
                                           if (section.title === 'העברת תשלומי ארנונה על שמי') url = 'https://forms.milgam.co.il/nahariya/forms/230/';
