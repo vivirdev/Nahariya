@@ -693,16 +693,16 @@ const FullPageWithTabs = () => {
                                           else if (section.title === 'אישור העדר חובות לעירייה') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
                                           else if (section.title === 'הפקת נסח טאבו') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
                                           else if (section.title === 'תשלומי ארנונה') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
+                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariya.smartcityapps.co.il/parking-permit';
+                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/childrens-education-registration/';
+                                          else if (section.title === 'רישום ילדים לצהרון') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
                                           else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
+                                          else if (section.title === 'בילוי ופנאי לצעירים ומשפחות') url = 'https://www.nahariya.muni.il/318/';
                                           else if (section.title === 'ספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
                                           else if (section.title === 'התעניינות / רישום עסק חדש בעיר') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/';
                                           else if (section.title === 'למידע על סיוע לעסקים מקומיים') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/';
-                                          else if (section.title === 'בילוי ופנאי לצעירים ומשפחות') url = 'https://www.nahariya.muni.il/318/';
                                           else if (section.title === 'טופס פניה למוקד 106') url = 'https://forms.milgam.co.il/nahariya/forms/232/';
                                           else if (section.title === 'שאלון מועמדים להגרלת הדירות של עמידר') url = 'https://www.amidar.co.il/%D7%A9%D7%90%D7%9C%D7%95%D7%9F-%D7%9E%D7%A2%D7%95%D7%9E%D7%93%D7%99%D7%9D-%D7%9C%D7%94%D7%92%D7%A8%D7%9C%D7%AA-%D7%94%D7%93%D7%99%D7%A8%D7%95%D7%AA-%D7%A9%D7%9C-%D7%A2%D7%9E%D7%99%D7%93%D7%A8/';
-                                          else if (section.title === 'רישום ילדים לצהרון') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariya.smartcityapps.co.il/parking-permit';
-                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/childrens-education-registration/';
                                           if (url) {
                                             return (
                                               <button
