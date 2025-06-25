@@ -774,7 +774,7 @@ const FullPageWithTabs = () => {
               <div className="flex justify-center gap-6">
                 <button 
                   onClick={() => setFeedbackChoice('like')}
-                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden outline-none focus:outline-none focus:ring-0 active:outline-none active:ring-0`}
+                  className={`flex items-center justify-center w-16 h-16 md:w-14 md:h-14 border-0 bg-transparent outline-none rounded-full transition-all duration-150 ${feedbackChoice === 'like' ? 'shadow-lg opacity-100' : 'opacity-50'}`}
                   style={{ WebkitTapHighlightColor: 'transparent', padding: 0, margin: 0 }}
                 >
                   {/* SVG */}
@@ -782,11 +782,10 @@ const FullPageWithTabs = () => {
                     <path d="M0,19.226A19.226,19.226,0,1,0,19.226,0,19.226,19.226,0,0,0,0,19.226" transform="translate(0)" fill="#4080ff"/>
                     <path d="M27.057,12.388h3.157a.882.882,0,0,1,.882.882V24.221a.882.882,0,0,1-.882.881H27.057a.882.882,0,0,1-.882-.881V13.27a.882.882,0,0,1,.882-.882m-13.7,2.954a4.086,4.086,0,0,0-1.481,1.316,3.348,3.348,0,0,0-.164,2.139A2.643,2.643,0,0,0,10.4,21.1a2.6,2.6,0,0,0,.823,2.468c-1.152,2.632.658,3.454.658,3.454h5.758s-1.316,6.251,1.81,6.416c1.618.085,1.974-1.481,1.974-3.949S24.738,25.2,24.738,25.2V15.25l-1.722-.725a4.662,4.662,0,0,0-1.81-.365H15.991a4.332,4.332,0,0,0-2.632,1.182" transform="translate(-2.672 -3.19)" fill="#fff"/>
                   </svg>
-                  {feedbackChoice === 'like' && <span className="text-xs text-blue-700 mt-2">נבחר</span>}
                 </button>
                 <button 
                   onClick={() => setFeedbackChoice('heart')}
-                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden outline-none focus:outline-none focus:ring-0 active:outline-none active:ring-0`}
+                  className={`flex items-center justify-center w-16 h-16 md:w-14 md:h-14 border-0 bg-transparent outline-none rounded-full transition-all duration-150 ${feedbackChoice === 'heart' ? 'shadow-lg opacity-100' : 'opacity-50'}`}
                   style={{ WebkitTapHighlightColor: 'transparent', padding: 0, margin: 0 }}
                 >
                   {/* SVG */}
@@ -794,7 +793,6 @@ const FullPageWithTabs = () => {
                     <path d="M110.691,19.226A19.226,19.226,0,1,0,91.465,38.453a19.227,19.227,0,0,0,19.226-19.226" transform="translate(-72.239)" fill="#f25268"/>
                     <path d="M105.86,19.124c0-4.078-3.311-7.384-6.581-7.384a5.917,5.917,0,0,0-5.25,3.973A5.915,5.915,0,0,0,88.78,11.74c-3.27,0-6.581,3.306-6.581,7.384,0,4.2,2.951,6.349,5.5,8.6,1.9,1.679,4.466,3.358,6.369,5.037,2.528-2.228,5.714-4.457,8.241-6.685,2.012-1.773,3.552-3.769,3.552-6.949" transform="translate(-75 -3.023)" fill="#fff"/>
                   </svg>
-                  {feedbackChoice === 'heart' && <span className="text-xs text-pink-700 mt-2">נבחר</span>}
                 </button>
               </div>
             </div>
