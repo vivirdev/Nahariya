@@ -48,7 +48,7 @@ const FullPageWithTabs = () => {
   const [isFeelingOpen, setIsFeelingOpen] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionMessage, setSubmissionMessage] = useState<string>('');
-  const [submissionError, setSubmissionError] = useState<string>('');
+  const [submissionError, setSubmissionError] = useState<string | { title: string; explanation: string; missingSections: string[] }>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sectionChoices, setSectionChoices] = useState<Record<string, SectionChoice>>({});
   const [showModal, setShowModal] = useState(false);
@@ -124,11 +124,6 @@ const FullPageWithTabs = () => {
           title: 'קבלת שוברים לתשלום במייל',
           completed: true,
           notRelevant: false
-        },
-        {
-          title: 'החלפת צרכנים',
-          completed: false,
-          notRelevant: true
         }
       ]
     },
@@ -234,11 +229,6 @@ const FullPageWithTabs = () => {
           title: 'למידע על סיוע לעסקים מקומיים',
           completed: true,
           notRelevant: false
-        },
-        {
-          title: 'בילוי ופנאי לצעירים ומשפחות',
-          completed: false,
-          notRelevant: false
         }
       ]
     }
@@ -276,20 +266,33 @@ const FullPageWithTabs = () => {
     setSubmissionMessage('');
     
     // בדיקת שדות חובה
-    const errors = [];
-    
+    let errors: string[] = [];
     if (!selectedDuration) {
       errors.push('אנא בחר.י כמה זמן את.ה מתגורר.ת בנהריה');
     }
-    
     if (!selectedFeeling) {
       errors.push('אנא בחר.י עד כמה את.ה מרגיש.ה בבית בנהריה');
     }
-    
-    // אם יש שגיאות, הצג אותן ועצור
-    if (errors.length > 0) {
-      setSubmissionError(errors.join('\n'));
-      // גלול למעלה כדי להראות את השגיאה
+
+    // בדיקה שכל הסקשנים נבחרו
+    let missingSections: string[] = [];
+    tabs.forEach((tab, tabIndex) => {
+      if (tab.sections && tab.sections.length > 0) {
+        tab.sections.forEach((section, sectionIndex) => {
+          const key = `tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`;
+          if (!sectionChoices[key]) {
+            missingSections.push(`"${section.title}" בטאב "${tab.title}"`);
+          }
+        });
+      }
+    });
+
+    if (errors.length > 0 || missingSections.length > 0) {
+      setSubmissionError({
+        title: 'הטופס לא מולא במלואו',
+        explanation: errors.length > 0 ? errors.join(' | ') : 'אנא בחר.י אפשרות עבור כל סעיף בטאבים הבאים:',
+        missingSections: missingSections
+      });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -406,12 +409,30 @@ const FullPageWithTabs = () => {
               </svg>
             </div>
             <div className="mr-3">
-              <h3 className="text-sm font-medium text-red-800 mb-1">
-                יש לתקן את השגיאות הבאות:
-              </h3>
-              <div className="text-sm text-red-700 whitespace-pre-line">
-                {submissionError}
-              </div>
+              {typeof submissionError === 'string' ? (
+                <>
+                  <h3 className="text-sm font-medium text-red-800 mb-1">
+                    יש לתקן את השגיאות הבאות:
+                  </h3>
+                  <div className="text-sm text-red-700 whitespace-pre-line">
+                    {submissionError}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-sm font-bold text-red-800 mb-1">{submissionError.title}</h3>
+                  {submissionError.explanation && (
+                    <div className="text-sm text-red-700 mb-2">{submissionError.explanation}</div>
+                  )}
+                  {submissionError.missingSections && submissionError.missingSections.length > 0 && (
+                    <ul className="list-disc pr-5 text-sm text-red-700">
+                      {submissionError.missingSections.map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              )}
             </div>
             <div className="mr-auto pr-3">
               <button
@@ -700,12 +721,13 @@ const FullPageWithTabs = () => {
                                           else if (section.title === 'טפסים ושירותים בתחום החינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
                                           else if (section.title === 'הצטרפות לקבוצת וואטסאפ') url = 'https://www.nahariya.muni.il/740/';
                                           else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
-                                          else if (section.title === 'בילוי ופנאי לצעירים ומשפחות') url = 'https://www.nahariya.muni.il/318/';
                                           else if (section.title === 'ספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
                                           else if (section.title === 'התעניינות / רישום עסק חדש בעיר') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/';
                                           else if (section.title === 'למידע על סיוע לעסקים מקומיים') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/';
                                           else if (section.title === 'טופס פניה למוקד 106') url = 'https://forms.milgam.co.il/nahariya/forms/232/';
                                           else if (section.title === 'שאלון מועמדים להגרלת הדירות של עמידר') url = 'https://www.amidar.co.il/%D7%A9%D7%90%D7%9C%D7%95%D7%9F-%D7%9E%D7%A2%D7%95%D7%9E%D7%93%D7%99%D7%9D-%D7%9C%D7%94%D7%92%D7%A8%D7%9C%D7%AA-%D7%94%D7%93%D7%99%D7%A8%D7%95%D7%AA-%D7%A9%D7%9C-%D7%A2%D7%9E%D7%99%D7%93%D7%A8/';
+                                          else if (section.title === 'ערעור על דוח חניה') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A8%D7%A2%D7%95%D7%A8-%D7%A2%D7%9C-%D7%93%D7%95%D7%97%D7%95%D7%AA-%D7%97%D7%A0%D7%99%D7%94/';
+                                          else if (section.title === 'בילוי ופנאי לצעירים ומשפחות') url = 'https://www.nahariya.muni.il/318/';
                                           if (url) {
                                             return (
                                               <button
