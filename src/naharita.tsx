@@ -774,7 +774,7 @@ const FullPageWithTabs = () => {
               <div className="flex justify-center gap-6">
                 <button 
                   onClick={() => setFeedbackChoice('like')}
-                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden ${feedbackChoice === 'like' ? 'scale-110' : 'opacity-60'} hover:scale-110`}
+                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden outline-none focus:outline-none focus:ring-0 active:outline-none active:ring-0`}
                   style={{ WebkitTapHighlightColor: 'transparent', padding: 0, margin: 0 }}
                 >
                   {/* SVG */}
@@ -786,7 +786,7 @@ const FullPageWithTabs = () => {
                 </button>
                 <button 
                   onClick={() => setFeedbackChoice('heart')}
-                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden ${feedbackChoice === 'heart' ? 'scale-110' : 'opacity-60'} hover:scale-110`}
+                  className={`flex flex-col items-center justify-center transition-all duration-200 w-20 h-20 md:w-16 md:h-16 border-0 shadow-none bg-transparent overflow-hidden outline-none focus:outline-none focus:ring-0 active:outline-none active:ring-0`}
                   style={{ WebkitTapHighlightColor: 'transparent', padding: 0, margin: 0 }}
                 >
                   {/* SVG */}
