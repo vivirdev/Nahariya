@@ -693,7 +693,7 @@ const FullPageWithTabs = () => {
                                           else if (section.title === 'אישור העדר חובות לעירייה') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
                                           else if (section.title === 'הפקת נסח טאבו') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
                                           else if (section.title === 'תשלומי ארנונה') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
-                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariya.smartcityapps.co.il/parking-permit';
+                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariyani.co.il/#home';
                                           else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/childrens-education-registration/';
                                           else if (section.title === 'רישום ילדים לצהרון') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
                                           else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
