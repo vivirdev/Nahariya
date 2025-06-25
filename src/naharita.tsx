@@ -20,6 +20,24 @@ interface Tab {
   sections: Section[];
 }
 
+// Loader component
+const Loader = () => (
+  <div className="flex items-center justify-center h-full">
+    <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <circle
+        className="opacity-25"
+        cx="12" cy="12" r="10"
+        stroke="#3459B1" strokeWidth="3"
+      />
+      <path
+        className="opacity-75"
+        fill="#3459B1"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      />
+    </svg>
+  </div>
+);
+
 const FullPageWithTabs = () => {
   const [activeTab, setActiveTab] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -375,7 +393,7 @@ const FullPageWithTabs = () => {
     <div className="min-h-screen flex flex-col" dir="rtl" style={{fontFamily: 'Assistant, sans-serif'}}>
       {/* Hero Image Section */}
       <div className="w-full h-[35vh]">
-        <img src="https://i.postimg.cc/QdKMfGDM/Component-1-1-1.png" alt="Nahariya Beach" className="w-full h-full object-cover" />
+        <img src="https://i.postimg.cc/43pSchyh/Project-Nahariya.png" alt="Nahariya Beach" className="w-full h-full object-cover" />
       </div>
 
       {/* אזור הודעות שגיאה */}
@@ -673,11 +691,8 @@ const FullPageWithTabs = () => {
                                           if (section.title === 'העברת תשלומי ארנונה על שמי') url = 'https://forms.milgam.co.il/nahariya/forms/230/';
                                           else if (section.title === 'קבלת שוברים לתשלום במייל') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
                                           else if (section.title === 'אישור העדר חובות לעירייה') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
-                                          else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariyani.co.il/#home';
-                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'רישום ילדים לקייטנות קיץ') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'טפסים ושירותים בתחום החינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'הצטרפות לקבוצת וואטסאפ') url = 'https://www.nahariya.muni.il/740/';
+                                          else if (section.title === 'הפקת נסח טאבו') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
+                                          else if (section.title === 'תשלומי ארנונה') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
                                           else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
                                           else if (section.title === 'ספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
                                           else if (section.title === 'התעניינות / רישום עסק חדש בעיר') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/';
@@ -727,30 +742,42 @@ const FullPageWithTabs = () => {
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl shadow-lg p-6 mb-4">
               <h4 className="text-lg font-bold text-gray-800 mb-6 text-center">
-                ?המידע עזר לי
+              המידע עזר לי?
               </h4>
               <div className="flex justify-center gap-6">
                 <button 
                   onClick={() => setFeedbackChoice('like')}
-                  className={`flex items-center justify-center hover:scale-110 transition-transform ${
-                    feedbackChoice === 'like' ? 'scale-110' : ''
-                  }`}
+                  className={`flex flex-col items-center justify-center transition-all duration-200
+                    w-20 h-20 md:w-16 md:h-16
+                    border-0 shadow-none bg-transparent
+                    ${feedbackChoice === 'like' ? 'scale-110' : 'opacity-60'}
+                    hover:scale-110
+                  `}
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
+                  {/* SVG */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 38.452 38.453">
                     <path d="M0,19.226A19.226,19.226,0,1,0,19.226,0,19.226,19.226,0,0,0,0,19.226" transform="translate(0)" fill="#4080ff"/>
                     <path d="M27.057,12.388h3.157a.882.882,0,0,1,.882.882V24.221a.882.882,0,0,1-.882.881H27.057a.882.882,0,0,1-.882-.881V13.27a.882.882,0,0,1,.882-.882m-13.7,2.954a4.086,4.086,0,0,0-1.481,1.316,3.348,3.348,0,0,0-.164,2.139A2.643,2.643,0,0,0,10.4,21.1a2.6,2.6,0,0,0,.823,2.468c-1.152,2.632.658,3.454.658,3.454h5.758s-1.316,6.251,1.81,6.416c1.618.085,1.974-1.481,1.974-3.949S24.738,25.2,24.738,25.2V15.25l-1.722-.725a4.662,4.662,0,0,0-1.81-.365H15.991a4.332,4.332,0,0,0-2.632,1.182" transform="translate(-2.672 -3.19)" fill="#fff"/>
                   </svg>
+                  {feedbackChoice === 'like' && <span className="text-xs text-blue-700 mt-2">נבחר</span>}
                 </button>
                 <button 
                   onClick={() => setFeedbackChoice('heart')}
-                  className={`flex items-center justify-center hover:scale-110 transition-transform ${
-                    feedbackChoice === 'heart' ? 'scale-110' : ''
-                  }`}
+                  className={`flex flex-col items-center justify-center transition-all duration-200
+                    w-20 h-20 md:w-16 md:h-16
+                    border-0 shadow-none bg-transparent
+                    ${feedbackChoice === 'heart' ? 'scale-110' : 'opacity-60'}
+                    hover:scale-110
+                  `}
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
+                  {/* SVG */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 38.452 38.453">
                     <path d="M110.691,19.226A19.226,19.226,0,1,0,91.465,38.453a19.227,19.227,0,0,0,19.226-19.226" transform="translate(-72.239)" fill="#f25268"/>
                     <path d="M105.86,19.124c0-4.078-3.311-7.384-6.581-7.384a5.917,5.917,0,0,0-5.25,3.973A5.915,5.915,0,0,0,88.78,11.74c-3.27,0-6.581,3.306-6.581,7.384,0,4.2,2.951,6.349,5.5,8.6,1.9,1.679,4.466,3.358,6.369,5.037,2.528-2.228,5.714-4.457,8.241-6.685,2.012-1.773,3.552-3.769,3.552-6.949" transform="translate(-75 -3.023)" fill="#fff"/>
                   </svg>
+                  {feedbackChoice === 'heart' && <span className="text-xs text-pink-700 mt-2">נבחר</span>}
                 </button>
               </div>
             </div>
@@ -770,11 +797,15 @@ const FullPageWithTabs = () => {
                 borderRadius: '23px'
               }}
             >
-              <span>{isSubmitting ? 'שולח...' : 'שליחה'}</span>
-              {!isSubmitting && (
-                <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
-                  <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
-                </svg>
+              {isSubmitting ? (
+                <Loader />
+              ) : (
+                <>
+                  <span>שליחה</span>
+                  <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
+                    <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
+                  </svg>
+                </>
               )}
             </button>
             
