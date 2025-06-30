@@ -13,7 +13,7 @@ const ThankYou: React.FC = () => {
       </div>
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 mt-8">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-[#3459B1] mt-8 mb-2">תודה עכשיו אתה נהרייני גאה!</h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-[#3459B1] mt-8 mb-2">תודה רבה על מילוי השאלון! נשמח לראותך משתלב.ת ונהנה מהעיר נהריה.</h1>
         <p className="text-lg font-bold text-black mb-6">תודה על שיתוף הפעולה</p>
         <div className="flex justify-center mb-8">
           <svg xmlns="http://www.w3.org/2000/svg" width="159.433" height="159.138" viewBox="0 0 159.433 159.138">
