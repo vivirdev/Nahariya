@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronDown, ChevronRight, ThumbsUp, Heart, Send } from 'l
 import { useNavigate } from 'react-router-dom';
 import ThankYou from './ThankYou';
 
-type SectionChoice = 'completed' | 'notRelevant';
+type SectionChoice = 'completed' | 'notRelevant' | 'willDoLater';
 type FeedbackChoice = 'like' | 'heart' | null;
 
 interface Section {
@@ -150,11 +150,6 @@ const FullPageWithTabs = () => {
           title: 'קבלת תו חניה נהרייני',
           completed: false,
           notRelevant: true
-        },
-        {
-          title: 'ערעור על דוח חניה',
-          completed: true,
-          notRelevant: false
         }
       ]
     },
@@ -168,16 +163,6 @@ const FullPageWithTabs = () => {
           title: 'רישום למסגרות חינוך',
           completed: false,
           notRelevant: true
-        },
-        {
-          title: 'רישום ילדים לצהרון',
-          completed: true,
-          notRelevant: false
-        },
-        {
-          title: 'רישום ילדים לקייטנות קיץ',
-          completed: false,
-          notRelevant: false
         },
         {
           title: 'טפסים ושירותים בתחום החינוך',
@@ -208,7 +193,7 @@ const FullPageWithTabs = () => {
           notRelevant: false
         },
         {
-          title: 'ספרייה העירונית מידעטק',
+          title: 'הספרייה העירונית מידעטק',
           completed: false,
           notRelevant: false
         }
@@ -274,25 +259,8 @@ const FullPageWithTabs = () => {
       errors.push('אנא בחר.י עד כמה את.ה מרגיש.ה בבית בנהריה');
     }
 
-    // בדיקה שכל הסקשנים נבחרו
-    let missingSections: string[] = [];
-    tabs.forEach((tab, tabIndex) => {
-      if (tab.sections && tab.sections.length > 0) {
-        tab.sections.forEach((section, sectionIndex) => {
-          const key = `tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`;
-          if (!sectionChoices[key]) {
-            missingSections.push(`"${section.title}" בטאב "${tab.title}"`);
-          }
-        });
-      }
-    });
-
-    if (errors.length > 0 || missingSections.length > 0) {
-      setSubmissionError({
-        title: 'הטופס לא מולא במלואו',
-        explanation: errors.length > 0 ? errors.join(' | ') : 'אנא בחר.י אפשרות עבור כל סעיף בטאבים הבאים:',
-        missingSections: missingSections
-      });
+    if (errors.length > 0) {
+      setSubmissionError(errors.join(' | '));
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -559,6 +527,31 @@ const FullPageWithTabs = () => {
           </div>
         </div>
 
+        {/* הנחיה חדשה לאחר 2 השאלות הראשונות */}
+        <div className="max-w-4xl mx-auto px-4 pb-0 text-right">
+          <div className="relative bg-white border-l-8 border-[#3459B1] rounded-2xl shadow-lg p-5 mb-6 mt-2 flex items-start gap-3">
+            {/* אייקון מידע */}
+            <div className="flex-shrink-0 mt-1">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="16" fill="#3459B1"/>
+                <text x="16" y="22" textAnchor="middle" fontSize="20" fontWeight="bold" fill="#fff" fontFamily="Arial">i</text>
+              </svg>
+            </div>
+            <div>
+              <p className="text-base text-black font-semibold leading-relaxed mb-1">
+                לפניך ריכוז המידע והפעולות הנחוצים לתושבים.ות חדשים.ות בעיר.
+              </p>
+              <ul className="list-disc pr-5 text-sm text-black font-normal space-y-1 mb-2">
+                <li>עברו על המידע וסמנו את הפעולות שכבר בוצעו / לא בוצעו / לא רלוונטיות.</li>
+                <li>לחיצה על הקישור בכל נושא תפתח חלון חדש באתר העירייה, שם תוכלו לבצע את הפעולה ישירות ולחזור לעמוד זה בכל רגע.</li>
+              </ul>
+              <div className="text-sm mt-2 text-black">
+                <span className="font-bold text-red-600">שימו לב:</span> אל תשכחו ללחוץ על כפתור השליחה בתחתית שאלון זה, כדי שנוכל להמשיך ולשפר את השירות.
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* כותרת לטאבים עם פס התקדמות צמוד */}
         <div className="sticky top-0 bg-white z-20 shadow-lg">
           <div className="px-4 py-5">
@@ -704,6 +697,16 @@ const FullPageWithTabs = () => {
                                           />
                                           <span className="text-sm text-gray-700">לא רלוונטי עבורי</span>
                                         </label>
+                                        <label className="flex items-center cursor-pointer">
+                                          <input
+                                            type="radio"
+                                            name={`tab${tabIndex}-section-${sectionIndex}`}
+                                            checked={sectionChoices[`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`] === 'willDoLater'}
+                                            onChange={() => handleSectionChoice(`tab${tabIndex === 0 ? '' : tabIndex}-${sectionIndex}`, 'willDoLater')}
+                                            className="appearance-none w-[11px] h-[11px] rounded-full border border-gray-400 checked:bg-black checked:border-black ml-1"
+                                          />
+                                          <span className="text-sm text-gray-700">אבצע בהמשך</span>
+                                        </label>
                                       </div>
                                       <div className="text-sm">
                                         <span className="text-gray-600">לביצוע הפעולה לחץ</span>
@@ -715,13 +718,11 @@ const FullPageWithTabs = () => {
                                           else if (section.title === 'הפקת נסח טאבו') url = 'https://forms.milgam.co.il/nahariya/forms/200/';
                                           else if (section.title === 'תשלומי ארנונה') url = 'https://forms.milgam.co.il/nahariya/forms/204/';
                                           else if (section.title === 'קבלת תו חניה נהרייני') url = 'https://nahariyani.co.il/#home';
-                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'רישום ילדים לצהרון') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
-                                          else if (section.title === 'רישום ילדים לקייטנות קיץ') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
+                                          else if (section.title === 'רישום למסגרות חינוך') url = 'https://www.edu-reg.co.il/closed?cid=2527878&sys=0&sub=1';
                                           else if (section.title === 'טפסים ושירותים בתחום החינוך') url = 'https://www.nahariya.muni.il/%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%A7%D7%95%D7%95%D7%A0%D7%99%D7%9D-%D7%97%D7%99%D7%A0%D7%95%D7%9A/';
                                           else if (section.title === 'הצטרפות לקבוצת וואטסאפ') url = 'https://www.nahariya.muni.il/740/';
-                                          else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.nahariya.muni.il/318/';
-                                          else if (section.title === 'ספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
+                                          else if (section.title === 'בילוי ופנאי לותיקים') url = 'https://www.mkn.org.il/page.php?type=matClass&id=2386&bc=AC6&m=305&bc=AC5';
+                                          else if (section.title === 'הספרייה העירונית מידעטק') url = 'https://nahariya.library.org.il/';
                                           else if (section.title === 'התעניינות / רישום עסק חדש בעיר') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7%D7%99%D7%9D-%D7%94%D7%A2/';
                                           else if (section.title === 'למידע על סיוע לעסקים מקומיים') url = 'https://www.nahariya.muni.il/%D7%A2%D7%A1%D7%A7-%D7%97%D7%93%D7%A9/';
                                           else if (section.title === 'טופס פניה למוקד 106') url = 'https://forms.milgam.co.il/nahariya/forms/232/';
@@ -764,6 +765,37 @@ const FullPageWithTabs = () => {
           </div>
         </div>
 
+        {/* סקשן חירום */}
+        <div className="px-4 py-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative bg-white border-l-8 border-[#3459B1] rounded-2xl shadow-lg p-5 mb-6 flex items-start gap-3">
+              <div>
+                <h4 className="text-lg font-bold text-blue-700 mb-3 text-right">מידע לשעת חירום</h4>
+                <ul className="space-y-2 pr-2">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenModal('https://vivir.pw/Landing%20Page%20Map.pdf', 'מפת העיר: חלוקת העיר בזמן חירום')}
+                      className="text-base font-semibold text-blue-700 hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
+                    >
+                      מפת העיר: חלוקת העיר בזמן חירום (PDF)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenModal('https://online.anyflip.com/vrqsv/oxgj/mobile/index.html', 'מידע והנחיות לשעת חירום')}
+                      className="text-base font-semibold text-blue-700 hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
+                    >
+                      מידע והנחיות לשעת חירום (חוברת דיגיטלית)
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* סקשן "?המידע עזר לי" */}
         <div className="px-4 py-6">
           <div className="max-w-md mx-auto">
@@ -795,39 +827,39 @@ const FullPageWithTabs = () => {
                   </svg>
                 </button>
               </div>
-            </div>
 
-            {/* כפתור שליחה */}
-            <button 
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className={`w-full text-white font-semibold flex items-center justify-center transition-all shadow-lg ${
-                isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
-              }`}
-              style={{ 
-                backgroundColor: '#3459b1',
-                fontSize: '17px',
-                fontWeight: '600',
-                height: '46px',
-                borderRadius: '23px'
-              }}
-            >
-              {isSubmitting ? (
-                <Loader />
-              ) : (
-                <>
-                  <span>שליחה</span>
-                  <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
-                    <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
-                  </svg>
-                </>
-              )}
-            </button>
-            
-            {/* הודעה על שדות חובה */}
-            <p className="text-xs text-gray-500 text-center mt-3">
-              * שדות חובה למילוי
-            </p>
+              {/* כפתור שליחה */}
+              <button 
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className={`w-full text-white font-semibold flex items-center justify-center transition-all shadow-lg mt-6 ${
+                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
+                }`}
+                style={{ 
+                  backgroundColor: '#3459b1',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  height: '46px',
+                  borderRadius: '23px'
+                }}
+              >
+                {isSubmitting ? (
+                  <Loader />
+                ) : (
+                  <>
+                    <span>שליחה</span>
+                    <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
+                      <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
+                    </svg>
+                  </>
+                )}
+              </button>
+              
+              {/* הודעה על שדות חובה */}
+              <p className="text-xs text-gray-500 text-center mt-3">
+                * שדות חובה למילוי
+              </p>
+            </div>
           </div>
         </div>
 
