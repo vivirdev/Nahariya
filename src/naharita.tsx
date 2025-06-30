@@ -826,39 +826,39 @@ const FullPageWithTabs = () => {
                     <path d="M105.86,19.124c0-4.078-3.311-7.384-6.581-7.384a5.917,5.917,0,0,0-5.25,3.973A5.915,5.915,0,0,0,88.78,11.74c-3.27,0-6.581,3.306-6.581,7.384,0,4.2,2.951,6.349,5.5,8.6,1.9,1.679,4.466,3.358,6.369,5.037,2.528-2.228,5.714-4.457,8.241-6.685,2.012-1.773,3.552-3.769,3.552-6.949" transform="translate(-75 -3.023)" fill="#fff"/>
                   </svg>
                 </button>
-              </div>
+            </div>
 
-              {/* כפתור שליחה */}
-              <button 
-                onClick={handleSubmit}
-                disabled={isSubmitting}
+            {/* כפתור שליחה */}
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
                 className={`w-full text-white font-semibold flex items-center justify-center transition-all shadow-lg mt-6 ${
-                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
-                }`}
-                style={{ 
-                  backgroundColor: '#3459b1',
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  height: '46px',
-                  borderRadius: '23px'
-                }}
-              >
-                {isSubmitting ? (
-                  <Loader />
-                ) : (
-                  <>
-                    <span>שליחה</span>
-                    <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
-                      <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
-                    </svg>
-                  </>
-                )}
-              </button>
-              
-              {/* הודעה על שדות חובה */}
-              <p className="text-xs text-gray-500 text-center mt-3">
-                * שדות חובה למילוי
-              </p>
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
+              }`}
+              style={{ 
+                backgroundColor: '#3459b1',
+                fontSize: '17px',
+                fontWeight: '600',
+                height: '46px',
+                borderRadius: '23px'
+              }}
+            >
+              {isSubmitting ? (
+                <Loader />
+              ) : (
+                <>
+                  <span>שליחה</span>
+                  <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16.669 16.67">
+                    <path d="M.049,1.206A.915.915,0,0,1,1.206.048l15.2,5.067a.915.915,0,0,1-.038,1.748L8.977,8.976,6.865,16.37a.915.915,0,0,1-1.748.038Zm1.192.681L5.984,16.118,8.093,8.739Zm.647-.647L8.74,8.092l7.379-2.108Z" fill="#fafafa" fillRule="evenodd"/>
+                  </svg>
+                </>
+              )}
+            </button>
+            
+            {/* הודעה על שדות חובה */}
+            <p className="text-xs text-gray-500 text-center mt-3">
+              * שדות חובה למילוי
+            </p>
             </div>
           </div>
         </div>
