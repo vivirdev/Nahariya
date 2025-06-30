@@ -529,7 +529,7 @@ const FullPageWithTabs = () => {
 
         {/* הנחיה חדשה לאחר 2 השאלות הראשונות */}
         <div className="max-w-4xl mx-auto px-4 pb-0 text-right">
-          <div className="relative bg-white border-l-8 border-[#3459B1] rounded-2xl shadow-lg p-5 mb-6 mt-2 flex items-start gap-3">
+          <div className="relative bg-white rounded-2xl shadow-lg p-5 mb-6 flex items-start gap-3">
             {/* אייקון מידע */}
             <div className="flex-shrink-0 mt-1">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -768,15 +768,15 @@ const FullPageWithTabs = () => {
         {/* סקשן חירום */}
         <div className="px-4 py-6">
           <div className="max-w-4xl mx-auto">
-            <div className="relative bg-white border-l-8 border-[#3459B1] rounded-2xl shadow-lg p-5 mb-6 flex items-start gap-3">
+            <div className="relative bg-white rounded-2xl shadow-lg p-5 mb-6 flex items-start gap-3">
               <div>
-                <h4 className="text-lg font-bold text-blue-700 mb-3 text-right">מידע לשעת חירום</h4>
+                <h4 className="text-lg font-bold text-black mb-3 text-right">מידע לשעת חירום</h4>
                 <ul className="space-y-2 pr-2">
                   <li>
                     <button
                       type="button"
                       onClick={() => handleOpenModal('https://vivir.pw/Landing%20Page%20Map.pdf', 'מפת העיר: חלוקת העיר בזמן חירום')}
-                      className="text-base font-semibold text-blue-700 hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
+                      className="text-base font-semibold text-black hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
                     >
                       מפת העיר: חלוקת העיר בזמן חירום (PDF)
                     </button>
@@ -785,7 +785,7 @@ const FullPageWithTabs = () => {
                     <button
                       type="button"
                       onClick={() => handleOpenModal('https://online.anyflip.com/vrqsv/oxgj/mobile/index.html', 'מידע והנחיות לשעת חירום')}
-                      className="text-base font-semibold text-blue-700 hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
+                      className="text-base font-semibold text-black hover:underline focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
                     >
                       מידע והנחיות לשעת חירום (חוברת דיגיטלית)
                     </button>
